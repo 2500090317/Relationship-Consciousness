@@ -1,9 +1,18 @@
-import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";import path from "path";
+import { fileURLToPath } from "url";import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import rateLimit from "express-rate-limit";
 import crypto from "crypto";
 import Razorpay from "razorpay";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 const app = express();
@@ -69,4 +78,12 @@ app.post("/api/verify-payment", (req, res) => {
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 const port = Number(process.env.PORT || 5000);
+app.use(express.static(path.resolve(__dirname, "../dist")));
+
+app.use((req, res, next) => {
+  if (req.method === "GET" && !req.path.startsWith("/api/")) {
+    return res.sendFile(path.resolve(__dirname, "../dist/index.html"));
+  }
+  next();
+});
 app.listen(port, () => console.log(`API server running on http://localhost:${port}`));
